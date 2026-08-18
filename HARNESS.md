@@ -26,6 +26,16 @@ Use the `agent-harnesses` skill to explore the harness just in time, based on pr
 
 When **maintaining the harness** (adding, moving, or renaming files), consult the `agent-harnesses` skill for reverse progressive disclosure to keep routing files in sync.
 
+## Vendored Upstream (`vendor/`)
+
+Three repos from the `agentharnesses` GitHub org are tracked here as git submodules, so local edits actually propagate upstream instead of drifting out of sync in a hand-maintained copy (see `references/diary/2026-08-18-1523-routing-filename-bug.md` for the incident that prompted this — this repo's own hand-ported copy of the metaskill had silently diverged from upstream with a real classification bug):
+
+- `vendor/metaskill` — source of the `agent-harnesses` skill. **`.claude/skills/agent-harnesses` is a symlink into `vendor/metaskill/agent-harnesses`, not a real directory** — the skill's actual content lives in the submodule; don't recreate it as a plain directory.
+- `vendor/agentharnesses` — the Agent Harnesses standard itself (`agentharnesses/agentharnesses`). **Its `docs/` are the ground truth for the standard** — when this repo's own explanations (skill docs, `harness.ts` in `ahar-vsvis`, etc.) disagree with it, the docs win; fix the local side, not the other way around.
+- `vendor/cli` — source for the `ahar` CLI (`agentharnesses/cli`), installed locally (`ahar --help`). `ahar validate <path>` / `ahar show <path>` are a second, independent authoritative check — useful for catching cases where this repo's own tooling has quietly drifted from the standard, like the routing-filename bug above.
+
+As of the commit that added them, none of the three have been modified from upstream — only referenced. Whether/how to contribute fixes upstream (e.g. the routing-filename bug) is still an open discussion, not yet acted on.
+
 ## Skills
 
 TODO: list skill buckets here as they are created.
