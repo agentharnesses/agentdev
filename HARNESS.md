@@ -1,5 +1,5 @@
 ---
-name: toprope
+name: toprope-agentdev
 description: Development harness for the toprope family of repos — an Electron-based agentic client (toprope) and its sibling/companion repos (e.g. the CLI). Load this when working on toprope's source or any sibling repo's source, not when toprope is being used to explore some other target harness.
 ---
 
