@@ -41,6 +41,18 @@ If neither mechanism matches, the directory is a plain `"group"`.
 
 ---
 
+## Routing File Naming
+
+A **routing file** (a `group` directory's own summary/index — what `_get_context()` reads and what `should_skip()` hides from normal listings) must be named `<BUCKET>.md`, where `BUCKET` is **not the directory's own name** — it's the name of whichever ancestor-or-self directory sits immediately below the nearest harness-root boundary (the harness root itself, or a nested ancestor with its own `HARNESS.md`). That name propagates unchanged through every nesting level beneath the boundary, until a nested `HARNESS.md` resets it.
+
+Concretely: if `skills/` sits directly under the harness root, every routing file anywhere inside `skills/` — no matter how deeply nested — must be named `SKILLS.md`. `skills/maintenance/`'s routing file is `SKILLS.md` (inherited from `skills/`), **not** `MAINTENANCE.md`. A nested `skills/sub-harness/HARNESS.md` would reset the bucket for its own descendants: `skills/sub-harness/docs/`'s routing file would then be `DOCS.md`, not `SKILLS.md`.
+
+This is easy to get backwards — naming a routing file after its own immediate directory reads as intuitive but is wrong for anything below the top level, and the mistake is silent (the file still looks plausible, just isn't recognized as routing by `disclose.py`/`reverse_disclose.py`/`map_references.py`, so the directory it lives in is treated as if it has no summary at all). `find_bucket_name()` in `disclose.py` implements this rule; `reverse_disclose.py` and `map_references.py` both call into it rather than recomputing their own name.
+
+**Validate against the real standard, not just this skill's own scripts.** If the `ahar` CLI (from `agentharnesses.io`) is installed, `ahar validate <path>` is the authoritative check — it will flag any grouping subdirectory missing a correctly-named routing file (`ahar show <path>` prints an annotated tree, useful for spot-checking a specific case). This skill's scripts are a hand-rolled reimplementation for agents without `ahar` available, kept in sync by hand — treat divergences from `ahar`'s actual behavior as bugs in this skill, not in `ahar`.
+
+---
+
 ## How to Use
 
 ### 0. Summarize the harness (do this first)

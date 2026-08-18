@@ -25,13 +25,40 @@ def parse_frontmatter(text: str) -> tuple[dict, str]:
     return meta, text[end + 3:].strip()
 
 
-def should_skip(entry: Path, parent: Path) -> bool:
+def find_bucket_name(directory: Path, root: Path) -> str:
+    """The name every routing/summary file directly inside `directory` must
+    use: NOT `directory`'s own name, but the name of whichever ancestor-or-
+    self directory sits immediately below the nearest harness-root boundary
+    (`root` itself, or a nested ancestor with its own HARNESS.md). That name
+    propagates unchanged through every nesting level beneath the boundary —
+    e.g. skills/maintenance/'s routing file is SKILLS.md (inherited from
+    skills/, the boundary child), not MAINTENANCE.md — until a nested
+    HARNESS.md resets the boundary and the propagation starts over from
+    whatever sits directly below *that*.
+    """
+    directory = directory.resolve()
+    root = root.resolve()
+    if directory == root:
+        return directory.name
+    current = directory
+    segment = current.name
+    while True:
+        parent = current.parent
+        if parent == current:
+            return segment  # hit filesystem root without finding `root`; shouldn't happen
+        if parent == root or (parent / "HARNESS.md").exists():
+            return segment
+        segment = parent.name
+        current = parent
+
+
+def should_skip(entry: Path, parent: Path, root: Path) -> bool:
     name = entry.name
     if name.startswith("."):
         return True
     if name == "HARNESS.md":
         return True
-    if entry.is_file() and name == parent.name.upper() + ".md":
+    if entry.is_file() and name == find_bucket_name(parent, root).upper() + ".md":
         return True
     return False
 
@@ -114,9 +141,9 @@ def file_type(path: Path, root: Path) -> str:
     return parts[0] if len(parts) > 1 else root.name
 
 
-def get_description(path: Path, kind: str) -> str | None:
+def get_description(path: Path, kind: str, root: Path) -> str | None:
     if kind == "group":
-        target = path / (path.name.upper() + ".md")
+        target = path / (find_bucket_name(path, root).upper() + ".md")
     elif path.is_dir():
         target = path / (kind.upper() + ".md")
     else:
@@ -152,7 +179,7 @@ def peek(directory: Path, root: Path) -> list[dict]:
     items = []
     idx = 1
     for entry in entries:
-        if should_skip(entry, directory):
+        if should_skip(entry, directory, root):
             continue
         if entry.resolve() == SESSIONS_DIR.resolve():
             continue
@@ -160,7 +187,7 @@ def peek(directory: Path, root: Path) -> list[dict]:
         if not kind:
             continue
         item_type = file_type(entry, root) if kind == "file" else kind
-        description = get_description(entry, kind)
+        description = get_description(entry, kind, root)
         item: dict = {
             "id": idx,
             "type": item_type,
@@ -200,8 +227,8 @@ def _delete_session(session_id: str) -> None:
         p.unlink()
 
 
-def _get_context(directory: Path) -> str | None:
-    summary = directory / (directory.name.upper() + ".md")
+def _get_context(directory: Path, root: Path) -> str | None:
+    summary = directory / (find_bucket_name(directory, root).upper() + ".md")
     if not summary.exists():
         return None
     try:
@@ -220,7 +247,7 @@ def _advance_queue(state: dict) -> list[dict]:
         next_dir = Path(entry["path"])
         state["depth"] = entry["depth"]
         state["current_path"] = str(next_dir)
-        state["current_context"] = _get_context(next_dir)
+        state["current_context"] = _get_context(next_dir, root)
         items = peek(next_dir, root)
         state["current_items"] = items
         if items:
