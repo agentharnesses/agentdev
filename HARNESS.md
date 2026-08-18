@@ -9,6 +9,17 @@ This meta-repo was originally scaffolded around a product called toprope (an Ele
 
 Until that submodule is added, this repo holds only the shared `agentdev` harness itself: agent-harness-standard conventions and integration knowledge, not product source. This repo's own name and top-level framing (still "toprope-agentdev") are a known-stale leftover of the dropped direction — not yet renamed, deliberately left as-is pending a decision.
 
+## Operating Notes
+
+- **Do not close VS Code while a Claude Code session is running inside it.** The `claude`
+  CLI runs as a normal child process of the VS Code integrated terminal — closing the
+  window (or the terminal pane) kills that process immediately, with no chance to persist
+  state or write a diary entry. This has already happened once and cost real time to
+  recover from (see
+  `references/diary/2026-08-18-1130-vscode-close-killed-session-mvp-recovered.md`). If a
+  session needs to end, let it finish its current step and commit first, or explicitly ask
+  it to wrap up — don't just close the window.
+
 ## How to Find Information for Claude
 
 Use the `agent-harnesses` skill to explore the harness just in time, based on prompts from the user. Select only what is relevant and repeat until the session is complete, then read the returned resources.
