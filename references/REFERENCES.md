@@ -1,5 +1,5 @@
 ---
-description: TODO: describe the reference documents in this harness and how to use them.
+description: Reference documents for the toprope-agentdev harness — stable knowledge plus the running design diary.
 ---
 
-TODO: add reference documents here as they are added.
+- `diary/` — date/timestamped diary of design thoughts, decisions, and plans for the toprope family of products. See `diary/DIARY.md`.

@@ -1,13 +1,13 @@
 ---
 name: toprope-agentdev
-description: Development harness for the toprope family of repos — an Electron-based agentic client (toprope) and its sibling/companion repos (e.g. the CLI). Load this when working on toprope's source or any sibling repo's source, not when toprope is being used to explore some other target harness.
+description: Development harness for tooling built around the agent-harnesses standard. Currently holds only shared developer knowledge (no product submodules) — see references/diary/ for how this repo's scope changed from an Electron app + CLI to a planned VS Code extension repo (ahar-vsvis, not yet added here).
 ---
 
 ## Upon loading the Harness
 
-toprope is a product: an agentic client, built with Electron + TypeScript, that embeds the Claude Agent SDK and gives it tools to interact with a companion CLI (developed in a separate repo). This meta-repo is a repo of repos: it holds the toprope app and its sibling/companion repos as git submodules, plus this one shared harness — SDK integration patterns, Electron architecture conventions, the agent-harness standard itself (since toprope's UX is expected to follow it), and CLI-integration contracts — usable across all of them.
+This meta-repo was originally scaffolded around a product called toprope (an Electron agentic client + companion CLI, held as git submodules). That direction was dropped — see `references/diary/2026-08-18-1007-vs-code-base-or-extension.md` for the full reasoning. The plan going forward is a single lightweight VS Code extension, `ahar-vsvis`, that visualizes agent navigation and the agent-harnesses standard structure for repos that use it; it's being developed as its own GitHub repo for now and may be folded in here later as a submodule.
 
-Product source lives in the sibling repo directories (e.g. `toprope/`), not in this harness — treat this harness as developer knowledge, not application code.
+Until that submodule is added, this repo holds only the shared `agentdev` harness itself: agent-harness-standard conventions and integration knowledge, not product source. This repo's own name and top-level framing (still "toprope-agentdev") are a known-stale leftover of the dropped direction — not yet renamed, deliberately left as-is pending a decision.
 
 ## How to Find Information for Claude
 
@@ -22,5 +22,5 @@ TODO: list skill buckets here as they are created.
 
 ## References
 
-TODO: list reference documents here as they are added.
+- `references/diary/` — date/timestamped design diary for the toprope family of products.
 - See `references/REFERENCES.md` for the full index.

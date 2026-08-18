@@ -1,6 +1,3 @@
-[submodule "toprope"]
-	path = toprope
-	url = https://github.com/agentharnesses/toprope.git
-[submodule "toprope-cli"]
-	path = toprope-cli
-	url = https://github.com/agentharnesses/toprope-cli.git
+[submodule "ahar-vsvis"]
+	path = ahar-vsvis
+	url = https://github.com/agentharnesses/ahar-vsvis.git
