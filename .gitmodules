@@ -1,0 +1,3 @@
+[submodule "toprope"]
+	path = toprope
+	url = https://github.com/agentharnesses/toprope.git
