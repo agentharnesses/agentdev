@@ -28,3 +28,4 @@ A running diary of the thinking behind toprope: fundamental ideas as they're fir
 
 - `2026-08-18-0939-vision-and-minimal-plan.md` — Founding vision (CLI-like editor + Claude Agent SDK + VS Code-style interface + agent-harness-native folder observability) and the minimal first plan.
 - `2026-08-18-1007-vs-code-base-or-extension.md` — Resolved: toprope branding dropped; project becomes ahar-vsvis, a single VS Code extension demoing the agent-harnesses standard. Survey of open-source AI code editors, a verified hook+transcript-tailing spike (real `claude` CLI v2.1.234), and an honest risk layering of what's solid vs. provisional in that design.
+- `2026-08-18-1101-ahar-vsvis-feature-plan.md` — Initial feature plan for ahar-vsvis: harness inventory/flatten-toggle/tree visualization, plus a real-time fade-away agent-navigation visualizer and clickable visit log. Also: planning docs belong here, not in product repos.
