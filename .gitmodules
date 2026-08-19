@@ -10,3 +10,6 @@
 [submodule "vendor/cli"]
 	path = vendor/cli
 	url = https://github.com/agentharnesses/cli.git
+[submodule "traversal-compare"]
+	path = traversal-compare
+	url = https://github.com/agentharnesses/traversal-compare.git
