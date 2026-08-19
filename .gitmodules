@@ -1,6 +1,6 @@
-[submodule "ahar-vsvis"]
-	path = ahar-vsvis
-	url = https://github.com/agentharnesses/ahar-vsvis.git
+[submodule "ahar-visualizer"]
+	path = ahar-visualizer
+	url = https://github.com/agentharnesses/ahar-visualizer.git
 [submodule "vendor/metaskill"]
 	path = vendor/metaskill
 	url = https://github.com/agentharnesses/metaskill.git

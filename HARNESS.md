@@ -1,13 +1,13 @@
 ---
-name: toprope-agentdev
-description: Development harness for tooling built around the agent-harnesses standard. Currently holds only shared developer knowledge (no product submodules) — see references/diary/ for how this repo's scope changed from an Electron app + CLI to a planned VS Code extension repo (ahar-vsvis, not yet added here).
+name: agentdev
+description: Development harness for tooling built around the agent-harnesses standard. Currently holds only shared developer knowledge (no product submodules) — see references/diary/ for how this repo's scope changed from an Electron app + CLI to a planned VS Code extension repo (ahar-visualizer, not yet added here).
 ---
 
 ## Upon loading the Harness
 
-This meta-repo was originally scaffolded around a product called toprope (an Electron agentic client + companion CLI, held as git submodules). That direction was dropped — see `references/diary/2026-08-18-1007-vs-code-base-or-extension.md` for the full reasoning. The plan going forward is a single lightweight VS Code extension, `ahar-vsvis`, that visualizes agent navigation and the agent-harnesses standard structure for repos that use it; it's being developed as its own GitHub repo for now and may be folded in here later as a submodule.
+This meta-repo was originally scaffolded around a product called toprope (an Electron agentic client + companion CLI, held as git submodules). That direction was dropped — see `references/diary/2026-08-18-1007-vs-code-base-or-extension.md` for the full reasoning. The plan going forward is a single lightweight VS Code extension, `ahar-visualizer`, that visualizes agent navigation and the agent-harnesses standard structure for repos that use it; it's being developed as its own GitHub repo for now and may be folded in here later as a submodule.
 
-Until that submodule is added, this repo holds only the shared `agentdev` harness itself: agent-harness-standard conventions and integration knowledge, not product source. This repo's own name and top-level framing (still "toprope-agentdev") are a known-stale leftover of the dropped direction — not yet renamed, deliberately left as-is pending a decision.
+This repo holds the shared `agentdev` harness itself (agent-harness-standard conventions and integration knowledge) plus the `ahar-visualizer` VS Code extension, vendored as a submodule. This repo was renamed from `toprope-agentdev` to `agentdev` on 2026-08-18 to drop the stale `toprope` product branding — see `references/diary/2026-08-18-2345-toprope-agentdev-renamed-to-agentdev.md`.
 
 ## Operating Notes
 
@@ -31,7 +31,7 @@ When **maintaining the harness** (adding, moving, or renaming files), consult th
 Three repos from the `agentharnesses` GitHub org are tracked here as git submodules, so local edits actually propagate upstream instead of drifting out of sync in a hand-maintained copy (see `references/diary/2026-08-18-1523-routing-filename-bug.md` for the incident that prompted this — this repo's own hand-ported copy of the metaskill had silently diverged from upstream with a real classification bug):
 
 - `vendor/metaskill` — source of the `agent-harnesses` skill. **`.claude/skills/agent-harnesses` is a symlink into `vendor/metaskill/agent-harnesses`, not a real directory** — the skill's actual content lives in the submodule; don't recreate it as a plain directory.
-- `vendor/agentharnesses` — the Agent Harnesses standard itself (`agentharnesses/agentharnesses`). **Its `docs/` are the ground truth for the standard** — when this repo's own explanations (skill docs, `harness.ts` in `ahar-vsvis`, etc.) disagree with it, the docs win; fix the local side, not the other way around.
+- `vendor/agentharnesses` — the Agent Harnesses standard itself (`agentharnesses/agentharnesses`). **Its `docs/` are the ground truth for the standard** — when this repo's own explanations (skill docs, `harness.ts` in `ahar-visualizer`, etc.) disagree with it, the docs win; fix the local side, not the other way around.
 - `vendor/cli` — source for the `ahar` CLI (`agentharnesses/cli`), installed locally (`ahar --help`). `ahar validate <path>` / `ahar show <path>` are a second, independent authoritative check — useful for catching cases where this repo's own tooling has quietly drifted from the standard, like the routing-filename bug above.
 
 As of the commit that added them, none of the three have been modified from upstream — only referenced. Whether/how to contribute fixes upstream (e.g. the routing-filename bug) is still an open discussion, not yet acted on.
