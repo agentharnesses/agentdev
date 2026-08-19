@@ -1,5 +1,5 @@
 ---
-description: TODO: describe the skill buckets in this harness and when to use each.
+description: Skill buckets for developing on the agentdev meta-repo itself.
 ---
 
-TODO: add skill buckets here as they are created.
+- `maintenance/` — harness upkeep skills (`SKILLS.md`) — for modifying this repo's own harness structure, keeping HARNESS.md/SKILLS.md/REFERENCES.md in sync.
