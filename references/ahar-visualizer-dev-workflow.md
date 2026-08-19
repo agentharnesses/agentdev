@@ -57,6 +57,28 @@ keystroke/activate calls against a new dev-host instance for this reason.
    himself rather than trying to drive it further — he's right there, and
    it sidesteps the automation dead-end above entirely.
 
+## `vscode://` URLs have the same limitation — confirmed, and worked around
+
+Firing a `vscode://` URL (e.g. `open "vscode://agentharnesses.ahar-visualizer/openTree?..."`,
+`ahar-visualizer`'s scriptable multi-panel hook — see its own
+`references/multi-panel-testing.md`) is a *different* mechanism from the Accessibility/`osascript`
+one above, but was confirmed (2026-08-19) to have the identical failure mode: macOS routes
+`vscode://` to the single registered `Code` app bundle, not to whichever `--user-data-dir`
+instance is "meant" to receive it. Tested directly: with a disposable dev-host instance running
+per the pattern above, firing the URL still opened a permission dialog in the *real*
+session-hosting window, never the dev-host — and even after allowing it, nothing happened there
+either, since its installed extension predated the handler being tested. So a `vscode://` URL
+cannot be used to drive a dev-host from a script; don't attempt it.
+
+The fix, if a dev-host specifically needs to be scriptable (not just eyeballed): `ahar-visualizer`
+now has a dev-mode-only file-queue alternative (`src/devQueue.ts`) that sidesteps the OS/URL layer
+entirely — a script writes a small JSON request file to a fixed directory instead of firing a URL,
+and the dev-host (only when `context.extensionMode === vscode.ExtensionMode.Development`) polls
+for it directly. Verified working end to end: a `traversal-compare` comparison run correctly
+landed its two live panels in a disposable dev-host, never touching the main window. Full details
+in `ahar-visualizer/references/multi-panel-testing.md`'s "Dev-mode: reaching a dev-host directly"
+section — nothing further needed here beyond knowing it exists and why.
+
 ## Cleanup
 
 Each instance leaves behind a real `/tmp/ahar-visualizer-demo-N` profile
