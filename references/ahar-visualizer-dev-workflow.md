@@ -1,5 +1,5 @@
 ---
-description: How to safely launch a throwaway Extension Development Host to eyeball changes to the ahar-visualizer extension, without risking the Claude Code session that's usually running inside the "real" one.
+description: How to safely launch a throwaway Extension Development Host to eyeball changes to the ahar-visualizer extension — or to get a working live-visualization target for traversal-compare, since the vscode:// URL fallback silently fails against a stale main-window install — without risking the Claude Code session that's usually running inside the "real" one.
 ---
 
 ## The hazard
@@ -56,6 +56,40 @@ keystroke/activate calls against a new dev-host instance for this reason.
 5. Beyond that first screenshot, hand it back to Daniel to click around
    himself rather than trying to drive it further — he's right there, and
    it sidesteps the automation dead-end above entirely.
+
+## Also the standard way to get live `traversal-compare` visualization
+
+This isn't only for eyeballing changes to `ahar-visualizer` itself — it's also the documented,
+working way to watch a `traversal-compare run` (or `traversal-compare view <run-id>`) live, per
+`traversal-compare/skills/running-a-test/SKILL.md` step 0. Reason: `viewer.py` prefers the
+dev-queue channel (below) and only falls back to a `vscode://` URL when no dev-host heartbeat is
+live, and that URL fallback silently fails whenever the main window's installed `ahar-visualizer`
+build predates whatever handler is being fired at it (see the section below) — which is the normal
+state, since there's no auto-update (`ahar-visualizer/references/release-process.md`). So: launch
+the dev-host with the safe pattern above (workspace path doesn't matter beyond "some real
+directory," `agentdev` itself is fine), confirm `/tmp/ahar-visualizer-dev-queue/.heartbeat` is
+fresh (<3s old), *then* run or view the comparison — no reinstalling or reloading the real window
+needed. Verified end-to-end 2026-08-19 (`diary/2026-08-19-1230-...` for the dev-queue build-out;
+confirmed again live the same day replaying a completed `efficient-exploration` run into a fresh
+dev-host).
+
+Two `run` flags matter specifically for getting this right, both confirmed live 2026-08-19: leave
+`--variant` at its default (`both`) — a single-variant run only ever opens one panel, not the
+side-by-side pair that's the actual point of watching live — and never add `--ephemeral` to a run
+you intend to watch or inspect afterward, since it deletes each `sandbox-<variant>/` right after
+grading, out from under a panel that may still be open and pinned to that exact path (the panel
+goes stale/empty the moment the run finishes, not just "nothing left to replay via `view` later").
+See `traversal-compare/skills/running-a-test/SKILL.md` step 2 for the fuller writeup.
+
+Once a dev-host is up and a comparison is running against it, this session's own automation (see
+"Automation is a dead end here" above) can confirm each panel's request landed — `run`/`view` print
+`[viewer] <label>: dev queue` per variant — but cannot reliably screenshot the dev-host window
+itself: macOS Accessibility exposes only the first-launched `Code` GUI process to scripting even
+when a second (the dev-host) is genuinely running (confirmed live via `osascript ... every process
+whose name is "Code"` returning both processes to `ps` but no reliable way to screenshot the
+second specifically), so a `screencapture -x` of the whole screen just captures whichever window
+already has focus — normally the real session-hosting window, not the dev-host. Hand the visual
+check back to Daniel for this reason, same as step 5 of the safe pattern above.
 
 ## `vscode://` URLs have the same limitation — confirmed, and worked around
 
